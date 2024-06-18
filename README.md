@@ -16,7 +16,7 @@ ________
 Для запуска проекта необходимо сделать 
 1. git clone репозитория
 ```
-git@github.com:Meatdam/online_shop.git
+git@github.com:Meatdam/online_traning_LMS_system.git
 ```
 2. Установить виртуальное окружение ```venv```
 ```
@@ -26,38 +26,23 @@ python3 -m venv venv
 ```
 source venv/bin/activate
 ```
-4. Создать базу данных в ```PgAdmin```, либо через терминал. Необходимо дать название в файле settings.py в каталоге 'config' в константе (словаре) 'DATABASES'
+4. Создать базу данных в ```PgAdmin```, либо через терминал. Необходимо дать название в файле settings.py в каталоге 'base' в константе (словаре) 'DATABASES'
 5. Обязательно установить пакет со всеми зависимостями 
 ```
 pip install -r requirements.txt
 ```
 6. Создать файл .env в корне проекта и заполнить следующие данные:
 ```
-# DB settings
-ENGINE=
-DB_NAME=
-USER_DB=
-PASSWORD_DB=
-
-# Email settings
-EMAIL_HOST_USER_MAIL=
-EMAIL_HOST_PASSWORD_MAIL=
-
-# email admin
-ADMIN_EMAIL=
-
-# secret key from django
-KEY=
-
-# domain settings
-DOMAIN=
+SECRET_KEY=
 
 DEBUG=
 
-# CACHE settings
-CACHE_ENABLED=
-CACHES_BACKEND=
-CACHES_LOCATION=
+# DB settings
+POSGRES_DB=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+
+ADMIN_EMAIL=
 
 ```
 
