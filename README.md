@@ -47,4 +47,7 @@ POSTGRES_PASSWORD=
 ADMIN_EMAIL=
 
 ```
+Автор 
+[Кузькин Илья]
+()
 
