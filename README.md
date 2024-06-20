@@ -49,5 +49,5 @@ ADMIN_EMAIL=
 ```
 Автор 
 [Кузькин Илья]
-()
+(https://github.com/Meatdam)
 
