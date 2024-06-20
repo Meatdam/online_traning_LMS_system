@@ -17,11 +17,17 @@ class CourseSerializer(ModelSerializer):
     """
     Сериализатор для модели Course
     """
+    lesson_count = SerializerMethodField()
     lesson = LessonSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course
         fields = '__all__'
+
+    def get_lesson_count(self, obj):
+        if obj.lesson.count():
+            return obj.lesson.count()
+        return 0
 
 
 class CourseDetailSerializer(ModelSerializer):
