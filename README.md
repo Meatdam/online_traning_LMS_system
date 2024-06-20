@@ -47,7 +47,6 @@ POSTGRES_PASSWORD=
 ADMIN_EMAIL=
 
 ```
-Автор 
-[Кузькин Илья]
-(https://github.com/Meatdam)
+
+[Кузькин Илья](https://github.com/Meatdam)
 
