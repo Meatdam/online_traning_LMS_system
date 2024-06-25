@@ -1,16 +1,6 @@
 from rest_framework.permissions import BasePermission
 
 
-class IsUserOrStaff(BasePermission):
-    """
-    Пермишен для пользователей и админов
-    """
-    def has_permission(self, request, view):
-        if request.user.is_staff:
-            return True
-        return request.user == view.get_object().id
-
-
 class Moderator(BasePermission):
     """
     Пермишен для модераторов

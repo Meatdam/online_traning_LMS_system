@@ -1,11 +1,9 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from users.models import User, Payments
-from users.permissions import IsUserOrStaff
 from users.serializers import UserSerializer, PaymentsSerializer
 
 
@@ -15,7 +13,6 @@ class UserListApiView(generics.ListAPIView):
     """
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
 
 
 class UserCreateApiView(generics.CreateAPIView):
@@ -24,6 +21,7 @@ class UserCreateApiView(generics.CreateAPIView):
     """
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
         user = serializer.save(is_active=True)
@@ -37,7 +35,6 @@ class UserRetrieveApiView(generics.RetrieveAPIView):
     """
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
 
 
 class UserUpdateAPIView(generics.UpdateAPIView):
@@ -46,7 +43,9 @@ class UserUpdateAPIView(generics.UpdateAPIView):
     """
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = [IsUserOrStaff]
+
+    def get_queryset(self):
+        return User.objects.filter(id=self.request.user.id)
 
 
 class UserDestroyAPIView(generics.DestroyAPIView):
@@ -54,7 +53,6 @@ class UserDestroyAPIView(generics.DestroyAPIView):
     API для удаления пользователя
     """
     queryset = User.objects.all()
-    permission_classes = [IsUserOrStaff]
 
 
 class PaymentsListAPIView(generics.ListAPIView):
