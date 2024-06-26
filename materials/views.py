@@ -39,11 +39,11 @@ class CourseViewSet(viewsets.ModelViewSet):
         Пермишены в зависимости от действия
         """
         if self.action == 'create':
-            self.permission_classes = (~Moderator | IsAuthenticated,)
+            self.permission_classes = (~Moderator, IsAuthenticated,)
         elif self.action == ['update', 'retrieve']:
-            self.permission_classes = [Moderator | IsOwner]
+            self.permission_classes = [IsAuthenticated, Moderator | IsOwner]
         elif self.action == 'destroy':
-            self.permission_classes = (~Moderator | IsOwner,)
+            self.permission_classes = (IsAuthenticated, ~Moderator | IsOwner,)
         return super().get_permissions()
 
 
