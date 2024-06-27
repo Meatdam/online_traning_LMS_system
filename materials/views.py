@@ -43,7 +43,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         elif self.action == ['update', 'retrieve']:
             self.permission_classes = [IsAuthenticated, Moderator | IsOwner]
         elif self.action == 'destroy':
-            self.permission_classes = (IsAuthenticated, ~Moderator | IsOwner,)
+            self.permission_classes = (IsAuthenticated, IsOwner,)
         return super().get_permissions()
 
 
@@ -69,7 +69,7 @@ class LessonListAPIView(generics.ListAPIView):
     """
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated, IsOwner | Moderator]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         """
@@ -104,5 +104,5 @@ class LessonDestroyAPIView(generics.DestroyAPIView):
     API для удаления урока
     """
     queryset = Lesson.objects.all()
-    permission_classes = (IsAuthenticated, ~Moderator | IsOwner,)
+    permission_classes = (IsAuthenticated, IsOwner,)
 
