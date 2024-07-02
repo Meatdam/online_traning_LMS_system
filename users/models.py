@@ -10,7 +10,7 @@ class User(AbstractUser):
     """
     Модель пользователя
     """
-    name = None
+    username = None
     email = models.EmailField(unique=True, verbose_name='почта')
     phone = models.CharField(max_length=20, verbose_name='телефон', **NULLABLE)
     city = models.CharField(max_length=20, verbose_name='город', **NULLABLE)
