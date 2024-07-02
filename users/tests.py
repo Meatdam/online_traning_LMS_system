@@ -1,7 +1,9 @@
+from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from users.models import User
+from materials.models import Course, Lesson
+from users.models import User, Payments
 
 
 class TestUser(APITestCase):
@@ -41,4 +43,35 @@ class TestUser(APITestCase):
         self.assertTrue(User.objects.all().count() == 2)
 
 
+class PaymentTestCase(APITestCase):
 
+    def setUp(self):
+        self.user = User.objects.create(email='test@bk.ru', password=12345)
+        self.client.force_authenticate(user=self.user)
+        self.course = Course.objects.create(owner=self.user, name='курс', description='описание курса')
+        self.lesson = Lesson.objects.create(owner=self.user, name='урок', description='описание урока',
+                                            url='https://youtube.com/', course=self.course)
+        self.payment = Payments.objects.create(user=self.user,
+                                               course=self.course, lesson=self.lesson, payment=2000,
+                                               payment_method='cash')
+
+    def test_payment_list(self):
+        """
+        Тест на получение списка платежей.
+        """
+        url = reverse('users:payments_list')
+        response = self.client.get(url)
+        data = response.json()
+        result = [
+            {
+                'id': self.payment.pk,
+                'payment_date': data[0]['payment_date'],
+                'payment': self.payment.payment,
+                'payment_method': self.payment.payment_method,
+                'user': self.user.pk,
+                'course': self.course.pk,
+                'lesson': self.lesson.pk
+            }
+        ]
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data, result)
