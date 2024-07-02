@@ -1,8 +1,11 @@
 from rest_framework import viewsets, generics
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-
-from materials.models import Course, Lesson
-from materials.serializers import CourseSerializer, LessonSerializer, CourseDetailSerializer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from materials.models import Course, Lesson, Subscription
+from materials.paginators import MaterialsPaginator
+from materials.serializers import CourseSerializer, LessonSerializer, CourseDetailSerializer, SubscriptionSerializer
 from users.permissions import Moderator, IsOwner
 
 
@@ -11,6 +14,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     ViewSet для модели Course
     """
     queryset = Course.objects.all()
+    pagination_class = MaterialsPaginator
 
     def perform_create(self, serializer):
         """
@@ -70,6 +74,7 @@ class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated]
+    pagination_class = MaterialsPaginator
 
     def get_queryset(self):
         """
@@ -105,4 +110,32 @@ class LessonDestroyAPIView(generics.DestroyAPIView):
     """
     queryset = Lesson.objects.all()
     permission_classes = (IsAuthenticated, IsOwner,)
+
+
+class SubscriptionApiView(APIView):
+    """
+    API для подписки на курс
+    """
+    serializer_class = SubscriptionSerializer
+    permission_classes = [IsAuthenticated, IsOwner]
+
+    def post(self, *args, **kwargs):
+        """
+        Создание подписки на курс
+        """
+        user = self.request.user
+        course_id = self.request.data.get('course')
+        course_item = get_object_or_404(Course, pk=course_id)
+        subs_item = Subscription.objects.filter(user=user, course=course_item)
+
+        if subs_item.exists():
+            subs_item.delete()
+            message = 'подписка удалена'
+
+        else:
+            Subscription.objects.create(user=user, course=course_item)
+            message = 'подписка добавлена'
+
+        return Response({"message": message})
+
 
