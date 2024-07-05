@@ -13,6 +13,7 @@ class Course(models.Model):
     image = models.ImageField(upload_to='curse', verbose_name='Превью', **NULLABLE)
     description = models.TextField(verbose_name='описание курса', **NULLABLE)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Владелец', **NULLABLE)
+    amount = models.PositiveIntegerField(verbose_name='стоимость курса', **NULLABLE)
 
     def __str__(self):
         return f'{self.name}'
@@ -33,6 +34,7 @@ class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс обучения', related_name='lesson',
                                **NULLABLE)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Владелец', **NULLABLE)
+    amount = models.PositiveIntegerField(verbose_name='стоимость курса', **NULLABLE)
 
     def __str__(self):
         return f'{self.name}'
