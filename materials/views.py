@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from materials.models import Course, Lesson, Subscription
 from materials.paginators import MaterialsPaginator
 from materials.serializers import CourseSerializer, LessonSerializer, CourseDetailSerializer, SubscriptionSerializer
+from materials.tasks import send_email
 from users.permissions import Moderator, IsOwner
 
 
@@ -49,6 +50,14 @@ class CourseViewSet(viewsets.ModelViewSet):
         elif self.action == 'destroy':
             self.permission_classes = (IsAuthenticated, IsOwner,)
         return super().get_permissions()
+
+    def perform_update(self, serializer):
+        """
+        Запуск отложенной задачи при изминение круса
+        """
+        course = serializer.save()
+        send_email.delay(course.pk)
+        course.save()
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
@@ -131,9 +140,11 @@ class SubscriptionApiView(APIView):
         if subs_item.exists():
             subs_item.delete()
             message = 'подписка удалена'
+            subs_item.subscript = False
 
         else:
-            Subscription.objects.create(user=user, course=course_item)
+            Subscription.objects.create(user=user, course=course_item, subscript=True)
+
             message = 'подписка добавлена'
 
         return Response({"message": message})

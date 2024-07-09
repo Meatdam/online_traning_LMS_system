@@ -48,9 +48,10 @@ class Subscription(models.Model):
     """
     Модель подписки пользователей на курсы
     """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь',
-                             **NULLABLE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                             verbose_name='Пользователь', **NULLABLE)
     course = models.ForeignKey(to=Course, on_delete=models.CASCADE, verbose_name='Курс обучения', **NULLABLE)
+    subscript = models.BooleanField(default=False, verbose_name='Признак подписки')
 
     def __str__(self):
         return f'{self.user} - {self.course}'

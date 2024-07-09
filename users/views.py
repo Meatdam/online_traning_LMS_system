@@ -1,9 +1,13 @@
+from datetime import datetime
+
+import pytz
 from django.views.generic import DetailView
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 
+from base.settings import TIME_ZONE
 from materials.models import Course, Lesson
 from users.models import User, Payments
 from users.serializers import UserSerializer, PaymentsSerializer
@@ -29,6 +33,7 @@ class UserCreateApiView(generics.CreateAPIView):
     def perform_create(self, serializer):
         user = serializer.save(is_active=True)
         user.set_password(user.password)
+        user.last_login = datetime.now(pytz.timezone(TIME_ZONE))
         user.save()
 
 
@@ -46,6 +51,7 @@ class UserUpdateAPIView(generics.UpdateAPIView):
     """
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return User.objects.filter(id=self.request.user.id)
