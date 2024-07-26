@@ -70,9 +70,11 @@ class LessonCreateAPIView(generics.CreateAPIView):
     def perform_create(self, serializer):
         """
         Перед сохранением урока добавляем владельца
+        Запуск задачи, отправки сообщения пользователю на email о добовление урока
         """
         lesson = serializer.save()
         lesson.owner = self.request.user
+        send_email.delay(lesson.course.pk)
         lesson.save()
 
 
